@@ -10,3 +10,9 @@ agency tool). Each release contains:
 
 Source lives in a separate private repo; this repo only hosts
 built artifacts.
+
+## Installing on a new machine
+
+See **[teammate-install.md](teammate-install.md)** — the full
+setup + troubleshooting guide for getting Skill Studio running on
+a fresh Mac.
