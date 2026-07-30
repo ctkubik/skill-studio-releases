@@ -102,8 +102,9 @@ From each audit finding, pull:
 1. **Read the source audit** fully. Identify domain, platform, page count, audit name/date,
    and the findings list (the Engineering Queue in rg-master-audit; the ranked findings in
    rg-site-audit).
-2. **Resolve the WHMCS ID:** use the `whmcs_id` input if given; else the client record; else
-   render the red placeholder `— (fill in)` and record it as missing.
+2. **Resolve the WHMCS ID** (see "WHMCS ID resolution" below): use the `whmcs_id` input if
+   given; else look the domain up in the WHMCS map; else render the red placeholder
+   `— (fill in)` and record it as missing.
 3. **Map findings → tasks.** Tier, ID, location, issue, fix, content. Drop nothing that is a
    real defect; merge exact duplicates.
 4. **Fill `work-order-template.html`:** cover tokens, one severity group per non-empty tier,
@@ -134,6 +135,37 @@ When `source` is a folder (or a client list mapped to audit files):
    audit that failed to parse (with the reason). Never report success for a client whose audit
    you could not read.
 
+## WHMCS ID resolution
+
+The WHMCS Client ID for page 1 comes from the CRM (The Roost), Supabase table
+`client_profiles`: the numeric `whmcs_id` column, keyed by the client's domain in `website`
+and `websites[]`. WHMCS itself lives at `rgbilling.roostergrin.com` and the ID equals the
+`userid` in a client's billing URL; the CRM syncs it (`whmcs_synced_at`).
+
+Generate a fresh `domain → whmcs_id` map at run time with this query (normalizes protocol,
+`www.`, and path; drops the `-1` sentinel), then look each audited domain up in it:
+
+```sql
+with norm as (
+  select whmcs_id,
+    regexp_replace(regexp_replace(regexp_replace(lower(trim(coalesce(website,''))),
+      '^https?://',''),'^www\.',''),'/.*$','') as domain
+  from client_profiles where whmcs_id is not null and whmcs_id > 0 and coalesce(website,'')<>''
+  union
+  select whmcs_id,
+    regexp_replace(regexp_replace(regexp_replace(lower(trim(w)),
+      '^https?://',''),'^www\.',''),'/.*$','') as domain
+  from client_profiles, unnest(websites) as w
+  where whmcs_id is not null and whmcs_id > 0 and coalesce(w,'')<>''
+)
+select distinct on (domain) domain, whmcs_id
+from norm where domain like '%.%' order by domain, whmcs_id;
+```
+
+Match the audited domain the same way (lowercase, strip protocol/`www.`/path). A domain not in
+the map renders the placeholder and joins the "Needs WHMCS ID" list — never guess an ID.
+Do not commit the materialized map to any public repo; it is client data.
+
 ## Two inputs this skill depends on
 
 It reformats existing data, so batch runs need both to be reachable:
@@ -141,8 +173,8 @@ It reformats existing data, so batch runs need both to be reachable:
 - **The technical audit deliverables** (rg-master-audit / rg-site-audit output). The client-
   facing Digital Evaluation Reports in `roostergrin-reports` are NOT audits and carry none of
   the technical findings — do not use them as a source.
-- **A client → WHMCS ID map** for the cover. Without it every sheet renders the placeholder,
-  which is valid but leaves page 1 incomplete.
+- **The WHMCS map** above. Without CRM access every sheet renders the placeholder, which is
+  valid but leaves page 1 incomplete.
 
 If either is missing, say so plainly and produce what the available data supports. Do not
 manufacture the missing input.

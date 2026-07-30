@@ -31,19 +31,27 @@ blocked on two inputs that are not reachable from the releases/reports repos:**
    Skill Studio and their outputs live in the app's local data, not in git. **A work order
    cannot be built from a marketing report** — the technical findings simply are not in it.
 
-2. **No WHMCS ID source.** `clients.json` has an internal 12-char id and domains, but no WHMCS
-   ID. Until a `domain → WHMCS ID` map exists, every cover renders the flagged placeholder.
+2. **WHMCS IDs — SOLVED.** The source is the CRM (The Roost) Supabase table `client_profiles`:
+   the numeric `whmcs_id` keyed by `website` / `websites[]`. Coverage as of 2026-07-30:
+   **1,209 clients, 970 with a WHMCS ID (1,505 domain aliases mapped).** Validated end to end:
+   `chathamorthonc.com → 1765`, and the wrong-practice domain from Chatham's CRITICAL-1,
+   `baybirdorthodontics.com → 1456`. The exact export query is in `SKILL.md` →
+   "WHMCS ID resolution". The materialized map is client data and is **not** committed here
+   (this repo is public); regenerate it from the CRM at run time.
 
-Neither gap is worked around by guessing — that would ship invented fixes to live client sites.
+Gap 1 is the only remaining blocker, and it clears by running where the audits live.
 
-## To run the batch (once the inputs are reachable)
+## To run the batch (in Skill Studio, where the audits are)
 
-Point the skill at the folder of **technical audit** deliverables, with the WHMCS map, in
-Skill Studio (where the audits live) or in a session that can reach them:
+1. Install this skill into the catalog (`skill-studio-team-skills`) → Skill Studio picks it up.
+2. Regenerate the WHMCS map from the CRM with the query in `SKILL.md` (or let the skill query
+   the Roost Supabase directly if that MCP is configured locally).
+3. Run against the folder of **technical audit** deliverables (rg-master-audit / rg-site-audit
+   output) — not the client-facing reports:
 
 ```
-rg-work-order  source=<folder of rg-master-audit / rg-site-audit outputs>
-               whmcs_map=<domain-to-WHMCS-ID csv or json>
+rg-work-order  source=<folder of technical audit outputs>
+               whmcs_map=<domain-to-WHMCS-ID json from the query above>
 ```
 
 Output: `work-orders/<client-slug>/work-order-<YYYY-MM>.html` (+ `.md`) per client, plus
