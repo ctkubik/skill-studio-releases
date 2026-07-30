@@ -1,0 +1,594 @@
+<title>Requests Team Work Order — chathamorthonc.com</title>
+<style>
+  :root {
+    --paper: #f6f7f9;
+    --sheet: #ffffff;
+    --ink: #1a1d23;
+    --ink-soft: #5b6473;
+    --ink-faint: #8b93a1;
+    --hair: #e2e5ea;
+    --hair-strong: #cfd4dc;
+    --accent: #2b3a55;
+    --accent-soft: #eef1f6;
+    --paste-bg: #f0f2f7;
+    --paste-hair: #d5dae4;
+    --crit: #c0392b;
+    --crit-bg: #fbecea;
+    --high: #b06a12;
+    --high-bg: #f8ecd8;
+    --med: #2f6db0;
+    --med-bg: #e4eefa;
+    --low: #6b7280;
+    --low-bg: #eceef1;
+    --ok: #2f7d4f;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #14161b;
+      --sheet: #1d2027;
+      --ink: #e7eaf0;
+      --ink-soft: #a3abba;
+      --ink-faint: #737b8a;
+      --hair: #2c313b;
+      --hair-strong: #3a414d;
+      --accent: #9db3d8;
+      --accent-soft: #232a38;
+      --paste-bg: #161a21;
+      --paste-hair: #333a46;
+      --crit: #f08a7d;
+      --crit-bg: #3a2320;
+      --high: #e0b26a;
+      --high-bg: #352a1a;
+      --med: #7fb2ea;
+      --med-bg: #1c2836;
+      --low: #9aa2b0;
+      --low-bg: #262a31;
+      --ok: #78c096;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14161b; --sheet: #1d2027; --ink: #e7eaf0; --ink-soft: #a3abba;
+    --ink-faint: #737b8a; --hair: #2c313b; --hair-strong: #3a414d; --accent: #9db3d8;
+    --accent-soft: #232a38; --paste-bg: #161a21; --paste-hair: #333a46;
+    --crit: #f08a7d; --crit-bg: #3a2320; --high: #e0b26a; --high-bg: #352a1a;
+    --med: #7fb2ea; --med-bg: #1c2836; --low: #9aa2b0; --low-bg: #262a31; --ok: #78c096;
+  }
+  :root[data-theme="light"] {
+    --paper: #f6f7f9; --sheet: #ffffff; --ink: #1a1d23; --ink-soft: #5b6473;
+    --ink-faint: #8b93a1; --hair: #e2e5ea; --hair-strong: #cfd4dc; --accent: #2b3a55;
+    --accent-soft: #eef1f6; --paste-bg: #f0f2f7; --paste-hair: #d5dae4;
+    --crit: #c0392b; --crit-bg: #fbecea; --high: #b06a12; --high-bg: #f8ecd8;
+    --med: #2f6db0; --med-bg: #e4eefa; --low: #6b7280; --low-bg: #eceef1; --ok: #2f7d4f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 20px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .mono { font-family: var(--font-mono); }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* ---- sample banner ---- */
+  .note {
+    background: var(--accent-soft);
+    border: 1px solid var(--hair-strong);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .note strong { color: var(--ink); }
+
+  /* ---- cover ---- */
+  .cover {
+    background: var(--sheet);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 34px 34px 26px;
+    box-shadow: 0 1px 2px rgba(20,25,40,0.05);
+  }
+  .cover-kicker {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+  .cover-kicker .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .domain {
+    font-size: clamp(30px, 6vw, 46px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    text-wrap: balance;
+    margin: 0 0 20px;
+  }
+  .cover-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 40px;
+    align-items: flex-start;
+    padding-top: 20px;
+    border-top: 1px solid var(--hair);
+  }
+  .whmcs {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .whmcs .id {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    background: var(--accent-soft);
+    border: 1px solid var(--hair-strong);
+    border-radius: 8px;
+    padding: 3px 12px;
+    align-self: flex-start;
+  }
+  .meta-list { display: flex; flex-direction: column; gap: 7px; font-size: 13px; }
+  .meta-list div { display: flex; gap: 8px; }
+  .meta-list .k { color: var(--ink-faint); min-width: 108px; }
+  .meta-list .v { color: var(--ink); }
+
+  /* ---- severity summary ---- */
+  .summary {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--hair);
+  }
+  .summary .total { font-size: 15px; font-weight: 700; margin-right: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12.5px; font-weight: 600;
+    padding: 4px 11px 4px 9px; border-radius: 20px;
+    border: 1px solid transparent;
+  }
+  .chip .n { font-variant-numeric: tabular-nums; }
+  .chip.crit { color: var(--crit); background: var(--crit-bg); border-color: color-mix(in srgb, var(--crit) 25%, transparent); }
+  .chip.high { color: var(--high); background: var(--high-bg); border-color: color-mix(in srgb, var(--high) 25%, transparent); }
+  .chip.med  { color: var(--med);  background: var(--med-bg);  border-color: color-mix(in srgb, var(--med) 25%, transparent); }
+  .chip.low  { color: var(--low);  background: var(--low-bg);  border-color: color-mix(in srgb, var(--low) 30%, transparent); }
+
+  /* ---- how to use ---- */
+  .howto {
+    margin-top: 22px; padding: 16px 18px;
+    background: var(--paper); border: 1px dashed var(--hair-strong);
+    border-radius: 10px; font-size: 13px; color: var(--ink-soft);
+  }
+  .howto .label { margin-bottom: 8px; }
+  .howto ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+  .howto b { color: var(--ink); font-weight: 700; }
+
+  /* ---- severity group heading ---- */
+  .group-head {
+    display: flex; align-items: center; gap: 10px;
+    margin: 8px 2px -4px;
+  }
+  .group-head .bar { width: 20px; height: 3px; border-radius: 2px; }
+  .group-head h2 { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 800; }
+  .group-head .cnt { font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .g-crit .bar { background: var(--crit); } .g-crit h2 { color: var(--crit); }
+  .g-high .bar { background: var(--high); } .g-high h2 { color: var(--high); }
+  .g-med .bar  { background: var(--med); }  .g-med h2  { color: var(--med); }
+  .g-low .bar  { background: var(--low); }  .g-low h2  { color: var(--low); }
+
+  /* ---- task card ---- */
+  .task {
+    position: relative;
+    background: var(--sheet);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 18px 20px 20px 24px;
+    box-shadow: 0 1px 2px rgba(20,25,40,0.04);
+    break-inside: avoid;
+  }
+  .task::before {
+    content: ""; position: absolute; left: 0; top: 14px; bottom: 14px;
+    width: 4px; border-radius: 4px;
+  }
+  .task.crit::before { background: var(--crit); }
+  .task.high::before { background: var(--high); }
+  .task.med::before  { background: var(--med); }
+  .task.low::before  { background: var(--low); }
+
+  .task-head { display: flex; align-items: flex-start; gap: 12px; }
+  .task-head input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px; margin: 2px 0 0; flex: none;
+    border: 1.5px solid var(--hair-strong); border-radius: 5px;
+    background: var(--paper); cursor: pointer; position: relative;
+    transition: background .12s, border-color .12s;
+  }
+  .task-head input[type="checkbox"]:checked { background: var(--ok); border-color: var(--ok); }
+  .task-head input[type="checkbox"]:checked::after {
+    content: ""; position: absolute; left: 6px; top: 2px;
+    width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  .task-head input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .task-titles { flex: 1; min-width: 0; }
+  .task-idrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 3px; }
+  .tag {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.04em; padding: 2px 8px; border-radius: 5px;
+  }
+  .task.crit .tag { color: var(--crit); background: var(--crit-bg); }
+  .task.high .tag { color: var(--high); background: var(--high-bg); }
+  .task.med  .tag { color: var(--med);  background: var(--med-bg); }
+  .task.low  .tag { color: var(--low);  background: var(--low-bg); }
+  .loc {
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft);
+    background: var(--paper); border: 1px solid var(--hair); border-radius: 5px; padding: 1px 7px;
+  }
+  .task-title { font-size: 16.5px; font-weight: 700; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+
+  .row { display: grid; grid-template-columns: 64px 1fr; gap: 12px; margin-top: 13px; align-items: baseline; }
+  .row .rk { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; padding-top: 1px; }
+  .row.issue .rk { color: var(--crit); }
+  .row.fix .rk { color: var(--ok); }
+  .row .rv { font-size: 14px; color: var(--ink); }
+  .row .rv code { font-family: var(--font-mono); font-size: 12.5px; background: var(--paper); border: 1px solid var(--hair); border-radius: 4px; padding: 1px 5px; }
+
+  /* ---- paste block ---- */
+  .paste { margin: 13px 0 0 76px; }
+  .paste-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    margin-bottom: 0;
+  }
+  .paste-tab {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;
+    color: var(--accent); background: var(--accent-soft);
+    border: 1px solid var(--paste-hair); border-bottom: none;
+    border-radius: 7px 7px 0 0; padding: 4px 10px;
+  }
+  .paste-what { font-size: 11.5px; color: var(--ink-faint); }
+  .paste pre {
+    margin: 0; background: var(--paste-bg); border: 1px solid var(--paste-hair);
+    border-radius: 0 8px 8px 8px; padding: 12px 14px; overflow-x: auto;
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.55; color: var(--ink);
+    tab-size: 2;
+  }
+  .paste.multi { margin-top: 16px; }
+  .paste .fill { color: var(--crit); font-weight: 600; }
+
+  /* ---- content table (metas / alts) ---- */
+  .ctable-wrap { margin: 13px 0 0 76px; overflow-x: auto; border: 1px solid var(--paste-hair); border-radius: 8px; }
+  table.ctable { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  table.ctable th { text-align: left; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); font-weight: 700; padding: 8px 12px; background: var(--paste-bg); border-bottom: 1px solid var(--paste-hair); }
+  table.ctable td { padding: 9px 12px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  table.ctable tr:last-child td { border-bottom: none; }
+  table.ctable td.p { font-family: var(--font-mono); color: var(--ink-soft); white-space: nowrap; }
+  table.ctable td.c { font-family: var(--font-mono); color: var(--ink); }
+
+  .footnote { font-size: 12px; color: var(--ink-faint); margin: 9px 0 0 76px; }
+
+  @media (max-width: 560px) {
+    .cover { padding: 24px 20px; }
+    .row { grid-template-columns: 1fr; gap: 3px; }
+    .paste, .ctable-wrap, .footnote { margin-left: 0; }
+  }
+</style>
+
+<div class="sheet">
+
+  <div class="note">
+    <strong>Mock-up — layout proposal.</strong> Tasks <span class="mono">CRITICAL-1/2/3</span> are your real Chatham findings. The <span class="mono">HIGH</span> / <span class="mono">MEDIUM</span> tasks and any address, phone, and title-tag values shown are illustrative sample data to demonstrate the format. Nothing here has been verified for this client.
+  </div>
+
+  <!-- ============ COVER / PAGE 1 ============ -->
+  <section class="cover">
+    <div class="cover-kicker">
+      <span class="dot"></span>
+      <span class="label" style="color:inherit;">RoosterGrin Media · Requests Team Work Order</span>
+    </div>
+
+    <h1 class="domain">chathamorthonc.com</h1>
+
+    <div class="cover-grid">
+      <div class="whmcs">
+        <span class="label">WHMCS Client ID</span>
+        <span class="id">#4812</span>
+      </div>
+      <div class="meta-list">
+        <div><span class="k">Prepared</span><span class="v tnum">2026-07-30</span></div>
+        <div><span class="k">Source audit</span><span class="v">rg-master-audit v3.0</span></div>
+        <div><span class="k">Pages audited</span><span class="v tnum">8</span></div>
+        <div><span class="k">Platform</span><span class="v">WordPress (Astro theme)</span></div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <span class="total tnum">6 tasks</span>
+      <span class="chip crit"><span class="n tnum">3</span> Critical</span>
+      <span class="chip high"><span class="n tnum">2</span> High</span>
+      <span class="chip med"><span class="n tnum">1</span> Medium</span>
+    </div>
+
+    <div class="howto">
+      <div class="label">How to use this sheet</div>
+      <ol>
+        <li>Work <b>top to bottom</b> — tasks are ordered by severity.</li>
+        <li>Each task states <b>what is wrong</b> and <b>the exact fix</b>. No background, no rationale.</li>
+        <li>Where a <b>PASTE</b> block is shown, use it <b>exactly as written</b> — do not reword. Replace only values flagged in <span class="mono" style="color:var(--crit)">red</span>.</li>
+        <li>Check the box when the fix is <b>deployed and live</b>.</li>
+        <li>Internal execution only. Nothing on this sheet is client-facing.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ CRITICAL ============ -->
+  <div class="group-head g-crit">
+    <span class="bar"></span>
+    <h2>Critical</h2>
+    <span class="cnt">3 tasks</span>
+  </div>
+
+  <!-- CRITICAL-1 -->
+  <article class="task crit">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark CRITICAL-1 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">CRITICAL-1</span>
+          <span class="loc">/sitemap.xml</span>
+        </div>
+        <h3 class="task-title">Sitemap points to the wrong practice</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv">sitemap.xml lists 6 URLs, all on <code>baybirdorthodontics.com</code>. Zero chathamorthonc.com URLs are in the submitted sitemap.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Replace the full contents of <code>sitemap.xml</code> with the block below, then re-submit <code>sitemap.xml</code> in Google Search Console. Exclude <code>/accessibility</code> and <code>/thank-you</code>.</span>
+    </div>
+    <div class="paste">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">sitemap.xml — full replacement</span>
+      </div>
+      <pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/about&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/treatments&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/new-patients&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/contact&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://www.chathamorthonc.com/faq&lt;/loc&gt;&lt;/url&gt;
+&lt;/urlset&gt;</pre>
+    </div>
+  </article>
+
+  <!-- CRITICAL-2 -->
+  <article class="task crit">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark CRITICAL-2 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">CRITICAL-2</span>
+          <span class="loc">All 8 pages · &lt;head&gt;</span>
+        </div>
+        <h3 class="task-title">No JSON-LD schema on any page</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv">No structured data exists anywhere on the site — no LocalBusiness / Orthodontist, no Person (Dr. Johnson), no FAQPage, no BreadcrumbList.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Add the Orthodontist block below to the <code>&lt;head&gt;</code> of <b>every</b> page. Add the FAQPage block to <code>/faq</code> only. Replace the <span class="fill">red</span> placeholder values with the client's real NAP before deploying.</span>
+    </div>
+    <div class="paste">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">Orthodontist JSON-LD — every page</span>
+      </div>
+      <pre>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Orthodontist",
+  "name": "Chatham Orthodontics",
+  "url": "https://www.chathamorthonc.com/",
+  "telephone": "<span class="fill">+1-919-742-0000</span>",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "<span class="fill">000 N Chatham Ave</span>",
+    "addressLocality": "Siler City",
+    "addressRegion": "NC",
+    "postalCode": "<span class="fill">27344</span>",
+    "addressCountry": "US"
+  },
+  "medicalSpecialty": "Orthodontic",
+  "priceRange": "$$"
+}
+&lt;/script&gt;</pre>
+    </div>
+    <div class="paste multi">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">FAQPage JSON-LD — /faq only (sample Q&amp;A)</span>
+      </div>
+      <pre>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "<span class="fill">At what age should my child see an orthodontist?</span>",
+    "acceptedAnswer": { "@type": "Answer",
+      "text": "<span class="fill">The AAO recommends a first visit by age 7.</span>" }
+  }]
+}
+&lt;/script&gt;</pre>
+    </div>
+  </article>
+
+  <!-- CRITICAL-3 -->
+  <article class="task crit">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark CRITICAL-3 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">CRITICAL-3</span>
+          <span class="loc">/ and /about</span>
+        </div>
+        <h3 class="task-title">Homepage and /about have no H1 heading</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv">Neither page has an <code>&lt;h1&gt;</code> in the rendered HTML. Both use H2s for section headings; the primary heading landmark is missing.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Add the H1 below to each page, in the hero section above the existing H2 tagline.</span>
+    </div>
+    <div class="paste">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">Homepage — hero</span>
+      </div>
+      <pre>&lt;h1&gt;Orthodontist in Siler City, NC&lt;/h1&gt;</pre>
+    </div>
+    <div class="paste multi">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">/about — above doctor bio</span>
+      </div>
+      <pre>&lt;h1&gt;Meet Dr. Jasenna Johnson, Siler City Orthodontist&lt;/h1&gt;</pre>
+    </div>
+  </article>
+
+  <!-- ============ HIGH ============ -->
+  <div class="group-head g-high">
+    <span class="bar"></span>
+    <h2>High</h2>
+    <span class="cnt">2 tasks</span>
+  </div>
+
+  <!-- HIGH-1 -->
+  <article class="task high">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark HIGH-1 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">HIGH-1</span>
+          <span class="loc">/</span>
+        </div>
+        <h3 class="task-title">Homepage title tag too long and not front-loaded</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv"><code>&lt;title&gt;</code> is 78 characters and leads with the practice name. The primary service + city term is cut off in the search snippet.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Replace the homepage <code>&lt;title&gt;</code> with the text below (61 characters).</span>
+    </div>
+    <div class="paste">
+      <div class="paste-head">
+        <span class="paste-tab">▤ Paste exactly</span>
+        <span class="paste-what">&lt;title&gt; text</span>
+      </div>
+      <pre>Siler City Orthodontist | Braces &amp; Invisalign | Chatham Orthodontics</pre>
+    </div>
+  </article>
+
+  <!-- HIGH-2 -->
+  <article class="task high">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark HIGH-2 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">HIGH-2</span>
+          <span class="loc">4 pages</span>
+        </div>
+        <h3 class="task-title">Meta descriptions missing on 4 pages</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv">No <code>&lt;meta name="description"&gt;</code> tag on <code>/treatments</code>, <code>/new-patients</code>, <code>/contact</code>, or <code>/faq</code>.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Add the matching meta description below to each page's <code>&lt;head&gt;</code>.</span>
+    </div>
+    <div class="ctable-wrap">
+      <table class="ctable">
+        <thead><tr><th>Page</th><th>Meta description (paste as value)</th></tr></thead>
+        <tbody>
+          <tr><td class="p">/treatments</td><td class="c">Braces and Invisalign in Siler City, NC. See treatment options, timelines, and financing at Chatham Orthodontics.</td></tr>
+          <tr><td class="p">/new-patients</td><td class="c">New patient at Chatham Orthodontics? Find your first-visit steps, forms, and financing options in Siler City, NC.</td></tr>
+          <tr><td class="p">/contact</td><td class="c">Contact Chatham Orthodontics in Siler City, NC. Call, request an appointment, or get directions to our office.</td></tr>
+          <tr><td class="p">/faq</td><td class="c">Answers to common orthodontic questions — treatment age, cost, Invisalign vs braces — from Chatham Orthodontics.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- ============ MEDIUM ============ -->
+  <div class="group-head g-med">
+    <span class="bar"></span>
+    <h2>Medium</h2>
+    <span class="cnt">1 task</span>
+  </div>
+
+  <!-- MEDIUM-1 -->
+  <article class="task med">
+    <div class="task-head">
+      <input type="checkbox" aria-label="Mark MEDIUM-1 done" />
+      <div class="task-titles">
+        <div class="task-idrow">
+          <span class="tag">MEDIUM-1</span>
+          <span class="loc">/ (7) · /about (5)</span>
+        </div>
+        <h3 class="task-title">12 images missing alt text</h3>
+      </div>
+    </div>
+    <div class="row issue">
+      <span class="rk">Issue</span>
+      <span class="rv">12 <code>&lt;img&gt;</code> elements have no <code>alt</code> attribute across the homepage and /about.</span>
+    </div>
+    <div class="row fix">
+      <span class="rk">Fix</span>
+      <span class="rv">Add the <code>alt</code> text below to each listed image.</span>
+    </div>
+    <div class="ctable-wrap">
+      <table class="ctable">
+        <thead><tr><th>Image file</th><th>alt text</th></tr></thead>
+        <tbody>
+          <tr><td class="p">hero-office.jpg</td><td class="c">Chatham Orthodontics office in Siler City, NC</td></tr>
+          <tr><td class="p">dr-johnson.jpg</td><td class="c">Dr. Jasenna Johnson, orthodontist</td></tr>
+          <tr><td class="p">invisalign-tray.jpg</td><td class="c">Clear Invisalign aligner tray</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">…9 more images listed in the full appendix table.</p>
+  </article>
+
+</div>
